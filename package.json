@@ -1,0 +1,32 @@
+{
+  "name": "immigrationWidgets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "_script.js",
+  "dependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "d3-jetpack-module": "0.0.17",
+    "lodash": "^4.17.4",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "require": "^2.4.20",
+    "webpack": "^2.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calebomusic/immigrationWidgets.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calebomusic/immigrationWidgets/issues"
+  },
+  "homepage": "https://github.com/calebomusic/immigrationWidgets#readme"
+}

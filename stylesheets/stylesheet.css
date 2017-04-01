@@ -1,0 +1,193 @@
+body {
+  font-family: 'Domine', serif;
+  user-select: none;
+}
+
+a {
+  color: inherit;
+}
+
+.grid line {
+  stroke: #ccc;
+  stroke-dasharray: 1 4;
+  stroke-linecap: round;
+}
+
+[class^=incompleteRange] {
+  fill: rgb(255, 199, 0);
+  opacity: 0;
+  -webkit-animation: incompleteRangeAni 1.5s 0s infinite;
+  -moz-animation: incompleteRangeAni 1.5s 0s infinite;
+  -o-animation: incompleteRangeAni 1.5s 0s infinite;
+  animation: incompleteRangeAni 1.5s 0s infinite;
+}
+
+@-webkit-keyframes incompleteRangeAni {
+  0%  { opacity: .05; }
+  50%   { opacity: 0.3; }
+  100% { opacity: .05; }
+}
+
+@-moz-keyframes incompleteRangeAni {
+  0%  { opacity: .05; }
+  50%   { opacity: 0.3; }
+  100% { opacity: .05; }
+}
+
+@-o-keyframes incompleteRangeAni {
+  0%  { opacity: .05; }
+  50%   { opacity: 0.3; }
+  100% { opacity: .05; }
+}
+
+@keyframes incompleteRangeAni {
+  0%  { opacity: .05; }
+  50%   { opacity: 0.3; }
+  100% { opacity: .05; }
+}
+
+.axisX {
+  shape-rendering: crispEdges;
+  /*fill: none;*/
+}
+
+.domain {
+  display: none
+}
+
+.beforeAnswerDisplay {
+  display: block;
+  margin: 2px;
+  border: 1px;
+  border-radius: 1px solid;
+  border-color: #FF4136;
+}
+
+[id^=answerText] {
+  margin-bottom: 10px;
+}
+
+[id^=before-] {
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.guessLine {
+  stroke: #FF4136;
+  stroke-width: 2px;
+  fill: none;
+}
+
+.answerLine {
+  stroke: steelblue;
+  fill: none;
+}
+
+.otherLine1 {
+  stroke: #05E177;
+  stroke-width: 2px;
+  fill: none;
+}
+
+svg {
+  cursor: default;
+  user-select: none;
+}
+
+.hidden {
+  display: none;
+}
+
+[class^=beforeGuessComplete] {
+  display: block;
+  height: 25px;
+  background-color: steelblue;
+  color: #fff;
+  font-size: 18;
+  border: 1px solid #fff;
+  cursor: pointer;
+  text-align: center;
+  padding-top: 5px;
+  width: 200px;
+  opacity: .3;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+[class^=afterGuessComplete] {
+  display: block;
+  height: 25px;
+  background-color: steelblue;
+  color: #fff;
+  font-size: 18;
+  border: 1px solid #fff;
+  cursor: pointer;
+  text-align: center;
+  padding-top: 5px;
+  width: 200px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+#foreignBornToday {
+  width: 100%;
+  height: 100%;
+}
+
+.numBox {
+  width: 200px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid;
+}
+
+.numBox-num {
+  cursor: default;
+  font-size: 32px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid steelblue;
+}
+
+.numBox-num:hover {
+  color: steelblue;
+}
+
+.controls {
+  font-size: 32px;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.numBox-change {
+  width: 100%;
+  height: 100%;
+  border: 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.plus {
+  border-color: #FF4136;
+}
+
+.minus {
+  border-color: #ffc700;
+}
+
+.numBox-change:hover {
+
+}

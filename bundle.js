@@ -63,579 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var generateGraph = __webpack_require__(1);
-var generateNumGuessWidget = __webpack_require__(2);
-
-document.addEventListener('DOMContentLoaded', function () {
-  var incarcerationOverTime = [{ year: 1925, population: 91.669 }, { year: 1930, population: 129.453 }, { year: 1935, population: 144.180 }, { year: 1940, population: 173.706 }, { year: 1945, population: 133.649 }, { year: 1950, population: 166.123 }, { year: 1955, population: 185.780 }, { year: 1960, population: 212.953 }, { year: 1965, population: 210.895 }, { year: 1970, population: 196.429 }, { year: 1975, population: 240.593 }, { year: 1980, population: 329.821 }, { year: 1985, population: 502.507 }, { year: 1990, population: 771.243 }, { year: 1995, population: 1125.874 }, { year: 2000, population: 1381.892 }, { year: 2005, population: 1462.866 }, { year: 2010, population: 1552.669 }, { year: 2015, population: 1476.847 }];
-
-  var incarcerationOverTimeOptions = {
-    xAxisText: 'Year',
-    yAxisText: 'Population in Thousands',
-    yMin: 0,
-    yMax: 1500,
-    xKey: 'year',
-    yKey: 'population',
-    xMin: 1925,
-    xMax: 2015,
-    xAxisLabelFormat: 'd',
-    yAxisLabelFormat: '',
-    xTicks: 10,
-    yTicks: 5,
-    // guessDist: 1000,
-    width: 600,
-    data: incarcerationOverTime
-  };
-
-  generateGraph('incarcerationOverTime', incarcerationOverTimeOptions);
-});
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _lodash = __webpack_require__(3);
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function generateGraph(graphId, options) {
-  var defaults = {
-    xAxisText: '',
-    yAxisText: '',
-    xKey: 'X',
-    yKey: 'Y',
-    xTicks: 8,
-    yTicks: 8,
-    xMin: 0,
-    xMax: Math.max.apply(options['data'].map(function (d) {
-      return d[options['xKey']];
-    })),
-    yMin: 0,
-    yMax: Math.max.apply(options['data'].map(function (d) {
-      return d[options['yKey']];
-    })),
-    xAxisLabelFormat: '',
-    yAxisLabelFormat: '',
-    radius: 6,
-    margin: { top: 15, right: 50, bottom: 50, left: 70 },
-    width: 570,
-    height: 340,
-    guessDist: false,
-    data: [],
-    otherData: []
-  };
-
-  options = (0, _lodash.merge)(defaults, options);
-
-  // Assign all options keys to variables of the same name in the function scope
-
-  var _Object$keys$sort$map = Object.keys(options).sort().map(function (k) {
-    return options[k];
-  }),
-      _Object$keys$sort$map2 = _slicedToArray(_Object$keys$sort$map, 19),
-      data = _Object$keys$sort$map2[0],
-      guessDist = _Object$keys$sort$map2[1],
-      height = _Object$keys$sort$map2[2],
-      margin = _Object$keys$sort$map2[3],
-      otherData = _Object$keys$sort$map2[4],
-      radius = _Object$keys$sort$map2[5],
-      width = _Object$keys$sort$map2[6],
-      xAxisLabelFormat = _Object$keys$sort$map2[7],
-      xAxisText = _Object$keys$sort$map2[8],
-      xKey = _Object$keys$sort$map2[9],
-      xMax = _Object$keys$sort$map2[10],
-      xMin = _Object$keys$sort$map2[11],
-      xTicks = _Object$keys$sort$map2[12],
-      yAxisLabelFormat = _Object$keys$sort$map2[13],
-      yAxisText = _Object$keys$sort$map2[14],
-      yKey = _Object$keys$sort$map2[15],
-      yMax = _Object$keys$sort$map2[16],
-      yMin = _Object$keys$sort$map2[17],
-      yTicks = _Object$keys$sort$map2[18];
-
-  var svg = d3.select('#' + graphId).append('svg:svg').attr('id', 'svg-' + graphId).attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).attr('offset', 100).append("g").attr("transform", "translate(37,40)");
-  // .attr('style', "-webkit-tap-highlight-color: rgba(0, 0, 0, 0);");
-
-  var xScale = d3.scaleLinear().domain(d3.extent(data, function (d) {
-    return d[xKey];
-  })).range([0, width]);
-
-  var yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
-
-  // Init grids, axes, and other paths
-  drawGrid();
-  drawAxes();
-  drawOtherPaths();
-
-  function drawAxes() {
-    svg.append("g").attr('class', 'axisX').attr("transform", "translate(0," + height + ")").call(d3.axisBottom(xScale).tickFormat(d3.format(xAxisLabelFormat)).ticks(xTicks));
-
-    svg.append("text").attr("transform", "translate(" + (width - margin.right) + " ," + (height + margin.top + 10) + ")").style("font-size", "12px").text(xAxisText);
-
-    svg.append("g").call(d3.axisLeft(yScale).tickFormat(d3.format(yAxisLabelFormat)).ticks(yTicks));
-
-    svg.append("text").attr('x', -30).attr("y", -30).attr("dy", "1em").style("font-size", "12px").text(yAxisText);
-  }
-
-  function make_x_gridlines() {
-    return d3.axisBottom(xScale).ticks(xTicks);
-  }
-
-  function make_y_gridlines() {
-    return d3.axisLeft(yScale).ticks(yTicks);
-  }
-
-  function drawGrid() {
-    svg.append("g").attr("class", "grid").attr("transform", "translate(0," + height + ")").call(make_x_gridlines().tickSize(-height).tickFormat(""));
-
-    svg.append("g").attr("class", "grid").call(make_y_gridlines().tickSize(-width).tickFormat(""));
-  }
-
-  // If there is other data don't include init header, otherwise include it
-  var initText = otherData.length === 0 ? 'Draw your Line!' : '';
-
-  svg.append('text').attr('id', 'drawYourLine').attr("transform", "translate(" + (width / 2 + 2) + " ," + (height / 2 - 2) + ")").style('text-anchor', 'middle').style("font-size", "26px").text(initText);
-
-  var guessData;
-  if (guessDist) {
-    guessData = [];
-
-    for (var i = data[0][xKey]; i <= data[data.length - 1][xKey]; i++) {
-      var _guessData$push;
-
-      guessData.push((_guessData$push = {}, _defineProperty(_guessData$push, xKey, i), _defineProperty(_guessData$push, yKey, yMin), _defineProperty(_guessData$push, 'defined', false), _guessData$push));
-    }
-  } else {
-    guessData = data.map(function (d) {
-      var _ref;
-
-      return _ref = {}, _defineProperty(_ref, xKey, d[xKey]), _defineProperty(_ref, yKey, d[yKey]), _defineProperty(_ref, 'defined', false), _ref;
-    });
-  }
-
-  var guessXDist = (guessData[1][xKey] - guessData[0][xKey]) / 2;
-
-  var body = d3.select('#svg-' + graphId);
-  var drag = d3.drag().on("drag", dragHandler);
-  body.call(drag);
-
-  // Init with otherDrawn set to false, set to true when other data lines are drawn
-  var otherDrawn = false;
-
-  var minXDefined, maxXDefined;
-
-  function dragHandler() {
-    var coord = d3.mouse(this),
-
-    // Note adjustments nec due to transform translate(37, 40)
-    xVal = clamp(xMin, xMax, xScale.invert(coord[0] - 37)),
-        yVal = clamp(yMin, yMax, yScale.invert(coord[1] - 40));
-
-    svg.select('.hoverText').remove();
-    svg.select("#drawYourLine").remove();
-    guessData.forEach(function (d) {
-      if (Math.abs(d[xKey] - xVal) < guessXDist) {
-        d[yKey] = yVal;
-        d.defined = true;
-        // Don't define up to first defined point
-        // } else if(d[xKey] < xVal && !.defined){
-        //   d[yKey] = yVal;
-        //   d.defined = true;
-        minXDefined = !minXDefined || minXDefined > xVal ? xVal : minXDefined;
-        maxXDefined = !maxXDefined || maxXDefined < xVal ? xVal : maxXDefined;
-      } else if (minXDefined && maxXDefined && !d.defined && minXDefined < d[xKey] && maxXDefined > d[xKey]) {
-        d[yKey] = yVal;
-        d.defined = true;
-      }
-    });
-
-    var defined = guessData.filter(function (d) {
-      return d.defined;
-    }),
-        incomplete = selectIncomplete(defined),
-        beforeAnswer = document.getElementById('beforeGuess-' + graphId);
-
-    if (complete(defined) && defined.length === guessData.length) {
-      beforeAnswer.classList.remove('beforeGuessComplete-' + graphId);
-      beforeAnswer.classList.add('afterGuessComplete-' + graphId);
-
-      beforeAnswer.addEventListener('click', drawAnswerPath);
-    } else {
-      beforeAnswer.removeEventListener('click', drawAnswerPath);
-    }
-
-    drawCircles('guessCirclesG', defined, '#FF4136');
-    drawPath(defined);
-    drawIncompleteRange(incomplete);
-  }
-
-  function handleMouseOver(d, i) {
-    var id = "t" + Math.round(d[xKey]) + "-" + Math.round(d[yKey] * 100) + "-" + i,
-        datum = d[yKey];
-
-    if (yAxisLabelFormat.match(/%/)) {
-      datum = (datum * 100).toFixed(1) + '%';
-    } else {
-      datum = datum.toFixed(1);
-    }
-
-    d3.select(this).attr('fill', '#ffc700').attr('r', radius + 1);
-
-    svg.append("text").attr('id', id).attr('class', 'hoverText').attr('x', function () {
-      return width / 2 - 18;
-    }).attr('y', function () {
-      return -14;
-    }).text(function () {
-      return [d[xKey] + ': ' + datum];
-    });
-  }
-
-  function lastValueText(name, d, color) {
-    // if(!datum) {
-    //   return;
-    // }
-    var datum;
-    if (yAxisLabelFormat.match(/%/)) {
-      datum = (d[yKey] * 100).toFixed(1) + '%';
-    } else {
-      datum = d[yKey].toFixed(1);
-    }
-
-    d3.select('#lastValue-' + name).remove();
-
-    svg.append("text").attr('id', 'lastValue-' + name).attr('class', 'lastValueText').attr('x', width + 10).attr('y', yScale(d[yKey]) + 5).attr('fill', color).text(function () {
-      return datum;
-    });
-  }
-
-  function handleMouseOut(color) {
-    return function (d, i) {
-      var id = "t" + Math.round(d[xKey]) + "-" + Math.round(d[yKey] * 100) + "-" + i;
-
-      d3.select(this).attr('fill', color).attr('r', radius);
-
-      d3.select("#" + id).remove();
-    };
-  }
-
-  function complete(data) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var d = _step.value;
-
-        if (d['defined'] === undefined) {
-          return false;
-        }
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-
-    return true;
-  }
-
-  // Three lines for three paths
-  var answerLine = d3.line().x(function (d) {
-    return xScale(d[xKey]);
-  }).y(function (d) {
-    return yScale(d[yKey]);
-  });
-
-  var guessLine = d3.line().x(function (d) {
-    return xScale(d[xKey]);
-  }).y(function (d) {
-    return yScale(d[yKey]);
-  });
-
-  var incompleteRangeLine1 = d3.line().x(function (d) {
-    return xScale(d[xKey]);
-  }).y(function (d) {
-    return yScale(d[yKey]);
-  });
-
-  var incompleteRangeLine2 = d3.line().x(function (d) {
-    return xScale(d[xKey]);
-  }).y(function (d) {
-    return yScale(d[yKey]);
-  });
-
-  // Array of incompleteRangeLines for use in highlighting both incomplete range
-  var incompleteRangeLines = [incompleteRangeLine1, incompleteRangeLine2];
-
-  // Select points for incomplete data range
-  function selectIncomplete(defined) {
-    if (guessData.length === defined.length) {
-      return [];
-    } else {
-      var incompleteRect = [];
-      if (defined[0][xKey] !== guessData[0][xKey]) {
-        var _ref2, _ref3, _ref4, _ref5;
-
-        incompleteRect.push([(_ref2 = {}, _defineProperty(_ref2, xKey, guessData[0][xKey]), _defineProperty(_ref2, yKey, yMin), _defineProperty(_ref2, 'defined', true), _ref2), (_ref3 = {}, _defineProperty(_ref3, xKey, guessData[0][xKey]), _defineProperty(_ref3, yKey, yMax), _defineProperty(_ref3, 'defined', true), _ref3), (_ref4 = {}, _defineProperty(_ref4, xKey, defined[0][xKey]), _defineProperty(_ref4, yKey, yMax), _defineProperty(_ref4, 'defined', true), _ref4), (_ref5 = {}, _defineProperty(_ref5, xKey, defined[0][xKey]), _defineProperty(_ref5, yKey, yMin), _defineProperty(_ref5, 'defined', true), _ref5)]);
-      } else {
-        incompleteRect.push([]);
-      }
-
-      var rightIncompleteX = defined[defined.length - 1][xKey];
-      if (rightIncompleteX !== guessData[guessData.length - 1][xKey]) {
-        var _ref6, _ref7, _ref8, _ref9;
-
-        incompleteRect.push([(_ref6 = {}, _defineProperty(_ref6, xKey, rightIncompleteX), _defineProperty(_ref6, yKey, yMin), _defineProperty(_ref6, 'defined', true), _ref6), (_ref7 = {}, _defineProperty(_ref7, xKey, rightIncompleteX), _defineProperty(_ref7, yKey, yMax), _defineProperty(_ref7, 'defined', true), _ref7), (_ref8 = {}, _defineProperty(_ref8, xKey, xMax), _defineProperty(_ref8, yKey, yMax), _defineProperty(_ref8, 'defined', true), _ref8), (_ref9 = {}, _defineProperty(_ref9, xKey, xMax), _defineProperty(_ref9, yKey, yMin), _defineProperty(_ref9, 'defined', true), _ref9)]);
-      } else {
-        incompleteRect.push([]);
-      }
-
-      return incompleteRect;
-    }
-  }
-
-  var path = svg.append('path');
-
-  function drawCircles(id, data, color) {
-    svg.select('#' + id).remove();
-
-    var originalRadius = id === 'answerCirclesG' ? 0 : radius;
-
-    svg.append('g').attr('id', id).selectAll('circle').data(data).enter().append('circle').attr('r', originalRadius).attr('cx', function (d) {
-      return xScale(d[xKey]);
-    }).attr('cy', function (d) {
-      return yScale(d[yKey]);
-    }).attr('fill', color).attr('class', 'guessCircles').on("mouseover", handleMouseOver).on("mouseout", handleMouseOut(color)).transition().duration(3000).attr('r', radius);
-  }
-
-  function drawPath(defined) {
-    path.attr('d', guessLine.defined(function (d) {
-      return d.defined;
-    })(defined)).attr('class', 'guessLine');
-    lastValueText('guess', defined[defined.length - 1], '#FF4136');
-  }
-
-  function drawOtherPaths() {
-    for (var i = 0; i < otherData.length; i++) {
-      var otherDatum = otherData[i],
-          otherLine = d3.line().x(function (d) {
-        return xScale(d[xKey]);
-      }).y(function (d) {
-        return yScale(d[yKey]);
-      });
-
-      drawOtherPath(otherDatum, otherLine, '#05E177', 'otherPath-' + i);
-      var otherPath = svg.append('path');
-
-      otherPath.data([otherDatum]).attr('d', otherLine).attr('class', 'otherLine1');
-
-      lastValueText('otherPath-i', otherDatum[otherDatum.length - 1], '#05E177');
-    }
-  }
-
-  // Draw incompleteRangeLines
-  var incompleteRange1 = svg.append('path'),
-      incompleteRange2 = svg.append('path'),
-      incompleteRanges = [incompleteRange1, incompleteRange2];
-
-  function drawIncompleteRange(incomplete) {
-    if (incomplete.length === 0) {
-      d3.select('.incompleteRange' + graphId).remove();
-    }
-
-    for (var _i = 0; _i < incomplete.length; _i++) {
-      var line = incompleteRangeLines[_i],
-          incompleteRangeSide = incomplete[_i];
-      incompleteRanges[_i].attr('d', line.defined(function (d) {
-        return d.defined;
-      })(incompleteRangeSide)).attr('class', 'incompleteRange' + graphId);
-    }
-  }
-
-  // declareAnswerPath
-  function drawOtherPath(data, line, color, name) {
-    var path = svg.append('path').data([data]).attr('class', 'answerLine').attr('stroke-width', 2).attr('d', line);
-
-    var length = path.node().getTotalLength();
-
-    path.attr("stroke-dasharray", length + " " + length).attr("stroke-dashoffset", length).transition().duration(2000).attr("stroke-dashoffset", 0);
-
-    drawCircles(name + 'CirclesG', data, color);
-  }
-
-  function drawAnswerPath() {
-    var answerText = document.getElementById('answerText-' + graphId),
-        beforeGuess = document.getElementById('beforeGuess-' + graphId);
-
-    drawOtherPath(data, answerLine, 'steelblue', 'answer');
-    window.setTimeout(function () {
-      return lastValueText('answer', data[data.length - 1], '#4682b4');
-    }, 2000);
-    answerText.classList.remove('hidden');
-    beforeGuess.classList.remove('afterGuessComplete-' + graphId);
-    beforeGuess.classList.add('beforeGuessComplete-' + graphId);
-    drag = d3.drag().on("drag", null);
-    body.call(drag);
-  }
-
-  function clamp(a, b, c) {
-    return Math.max(a, Math.min(b, c));
-  }
-}
-
-module.exports = generateGraph;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/*
-  widgetLocationId
-
-  may make format more customizable
-*/
-
-function generateNumGuessWidget(widgetLocationId, numFormat) {
-  var fBT = document.getElementById(widgetLocationId),
-      num = document.createElement('div'),
-      numBox = document.createElement('div');
-
-  numBox.classList.add('numBox');
-
-  num.setAttribute('id', 'numBox-num-' + widgetLocationId);
-  num.classList.add('numBox-num');
-  num.textContent = "?";
-
-  var controls = document.createElement('div');
-  controls.classList.add('controls');
-
-  var plus = document.createElement('div'),
-      minus = document.createElement('div');
-
-  var incrementInterval, decrementInterval;
-
-  plus.addEventListener("click", increment);
-  plus.addEventListener("mousedown", incrementHandler);
-
-  plus.addEventListener("mouseup", function (e) {
-    e.preventDefault();
-    window.clearTimeout(incrementInterval);
-  });
-
-  minus.addEventListener("click", decrement);
-  minus.addEventListener("mousedown", decrementHandler);
-
-  minus.addEventListener("mouseup", function (e) {
-    e.preventDefault();
-    window.clearTimeout(decrementInterval);
-  });
-
-  var guess = 0;
-
-  function incrementHandler(e) {
-    e.preventDefault();
-    incrementInterval = setInterval(increment, 150);
-  }
-
-  function decrementHandler(e) {
-    e.preventDefault();
-    decrementInterval = setInterval(decrement, 150);
-  }
-
-  function increment() {
-    var num = document.getElementById('numBox-num-' + widgetLocationId),
-        beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
-
-    if (guess < 100) {
-      if (guess === 0) {
-        beforeGuess.classList.remove('beforeGuessComplete-' + widgetLocationId);
-        beforeGuess.classList.add('afterGuessComplete-' + widgetLocationId);
-      }
-      guess++;
-      num.textContent = '' + guess + numFormat;
-    }
-  }
-
-  function decrement() {
-    var num = document.getElementById('numBox-num-' + widgetLocationId),
-        beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
-
-    if (guess > 0) {
-      if (guess === 0) {
-        beforeGuess.classList.remove('beforeGuessComplete-' + widgetLocationId);
-        beforeGuess.classList.add('afterGuessComplete-' + widgetLocationId);
-      }
-      guess--;
-      num.textContent = '' + guess + numFormat;
-    }
-  }
-
-  plus.classList.add('numBox-change');
-  plus.classList.add('plus');
-  minus.classList.add('numBox-change');
-  minus.classList.add('minus');
-  plus.textContent = '+';
-  minus.textContent = '-';
-
-  controls.appendChild(plus);
-  controls.appendChild(minus);
-
-  numBox.appendChild(num);
-  numBox.appendChild(controls);
-  fBT.appendChild(numBox);
-
-  // Handle answer
-  var beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
-  beforeGuess.addEventListener('click', handleAnswer);
-
-  function handleAnswer() {
-    var answer = document.getElementById('answerText-' + widgetLocationId),
-        beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
-
-    beforeGuess.classList.remove('afterGuessComplete-' + widgetLocationId);
-    beforeGuess.classList.add('beforeGuessComplete-' + widgetLocationId);
-
-    plus.removeEventListener('click', increment);
-    plus.removeEventListener('mousedown', increment);
-    minus.removeEventListener('click', decrement);
-    minus.removeEventListener('mousedown', decrement);
-
-    answer.classList.remove('hidden');
-  }
-}
-
-module.exports = generateNumGuessWidget;
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -17727,6 +17159,745 @@ module.exports = generateNumGuessWidget;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)(module)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _lodash = __webpack_require__(0);
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/*TODO
+  yScale axis
+  xScale axis
+  Options: alternate bars between guess + answer, diff graphs, split graph in half
+*/
+function generateBars(graphId, options) {
+  var defaults = {
+    xAxisText: '',
+    yAxisText: '',
+    xKey: 'xScale',
+    yKey: 'yScale',
+    xTicks: 8,
+    yTicks: 8,
+    xMin: 0,
+    xMax: Math.max.apply(options['data'].map(function (d) {
+      return d[options['xKey']];
+    })),
+    yMin: 0,
+    yMax: Math.max.apply(options['data'].map(function (d) {
+      return d[options['yKey']];
+    })),
+    xAxisLabelFormat: '',
+    yAxisLabelFormat: '',
+    radius: 6,
+    margin: { top: 15, right: 75, bottom: 50, left: 50 },
+    width: 570,
+    height: 340,
+    guessDist: false,
+    data: [],
+    barWidth: 40,
+    otherData: []
+  };
+
+  options = (0, _lodash.merge)(defaults, options);
+
+  // Assign all options keys to variables of the same name in the function scope
+
+  var _Object$keys$sort$map = Object.keys(options).sort().map(function (k) {
+    return options[k];
+  }),
+      _Object$keys$sort$map2 = _slicedToArray(_Object$keys$sort$map, 20),
+      barWidth = _Object$keys$sort$map2[0],
+      data = _Object$keys$sort$map2[1],
+      guessDist = _Object$keys$sort$map2[2],
+      height = _Object$keys$sort$map2[3],
+      margin = _Object$keys$sort$map2[4],
+      otherData = _Object$keys$sort$map2[5],
+      radius = _Object$keys$sort$map2[6],
+      width = _Object$keys$sort$map2[7],
+      xAxisLabelFormat = _Object$keys$sort$map2[8],
+      xAxisText = _Object$keys$sort$map2[9],
+      xKey = _Object$keys$sort$map2[10],
+      xMax = _Object$keys$sort$map2[11],
+      xMin = _Object$keys$sort$map2[12],
+      xTicks = _Object$keys$sort$map2[13],
+      yAxisLabelFormat = _Object$keys$sort$map2[14],
+      yAxisText = _Object$keys$sort$map2[15],
+      yKey = _Object$keys$sort$map2[16],
+      yMax = _Object$keys$sort$map2[17],
+      yMin = _Object$keys$sort$map2[18],
+      yTicks = _Object$keys$sort$map2[19];
+
+  // var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+  //     y = d3.scaleLinear().rangeRound([height, 0]);
+  //
+  // x.domain(data.map(function(d) { return d[xKey]; }));
+  // y.domain([0, d3.max(data, function(d) { return d[yKey]; })]);
+
+  var guessData = data.map(function (d) {
+    var _ref;
+
+    return _ref = {}, _defineProperty(_ref, xKey, d[xKey]), _defineProperty(_ref, yKey, yMin), _ref;
+  });
+
+  var xAxisOrder = {};
+
+  guessData.forEach(function (d, i) {
+    var xVal = d[xKey];
+    xAxisOrder[xVal] = i;
+  });
+
+  var xScale = d3.scaleBand().domain(data.map(function (d) {
+    return d[xKey];
+  })).range([0, width]).padding(.5),
+      yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
+
+  // var svg = d3.select("#" + graphId)
+  //       .append("svg:svg")
+  //       .attr("width", width)
+  //       .attr("height", height);
+  //
+  // var g = svg.append("g")
+  //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  //         .attr("height", height + margin.top + margin.bottom);
+
+  var g = d3.select('#' + graphId).append('svg:svg').attr('id', 'svg-' + graphId).attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).attr('offset', 100).append("g").attr("transform", "translate(37,40)");
+
+  // g.append("g")
+  //   .attr("class", "axis axis--xScale")
+  //   .attr("transform", "translate(0," + height + ")")
+  //   .call(d3.axisBottom(xScale));
+
+  // g.append("g")
+  //     .attr("class", "axis axis--yScale")
+  //     .call(d3.axisLeft(y)
+  //             .tickFormat('')
+  //             .ticks(6))
+  //   .append("text")
+  //     .attr("transform", "rotate(-90)")
+  //     .attr("yScale", 6)
+  //     .attr("dy", "0.71em")
+  //     .attr("text-anchor", "end")
+  //     .text("Frequency");
+
+  drawAxes();
+
+  function drawAxes() {
+    g.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(xScale));
+
+    // g.append("text")
+    //     .attr("transform",
+    //           "translate(" + (width - margin.right) + " ," +
+    //                          (height + margin.top + 10) + ")")
+    //     .style("font-size", "12px")
+    //     .text(xAxisText);
+
+
+    g.append("g").call(d3.axisLeft(yScale).tickFormat(d3.format(yAxisLabelFormat)).ticks(yTicks));
+    //
+    // g.append("text")
+    //     .attr('xScale', -30)
+    //     .attr("yScale", -30)
+    //     .attr("dy", "1em")
+    //     .style("font-size", "12px")
+    //     .text(yAxisText);
+  }
+
+  g.selectAll(".bar").data(data).enter().append("rect").attr("class", "bar").attr("x", function (d) {
+    return xScale(d[xKey]);
+  }).attr("width", xScale.bandwidth()).attr("y", function (d) {
+    return yScale(d[yKey]);
+  }).attr("height", function (d) {
+    return height - yScale(d[yKey]);
+  }).attr("fill", "#2d578b");
+
+  // var bars = g
+  //       .selectAll("rect")
+  //       .data(data)
+  //       .enter()
+  //         .append("svg:rect")
+  //         .attr("xScale", function(d, index) { return xScale(d[xKey])})
+  //         .attr("yScale", function(d, index) { return height - yScale(d[yKey])})
+  //         .attr("height", function(d, index) { return yScale(d[yKey]) })
+  //         .attr("width", barWidth)
+  //         .attr("fill", "#2d578b");
+
+  // var text = bars.selectAll("text")
+  //   .data(data)
+  //   .enter()
+  //     .append("svg:text")
+  //     .attr("xScale", function(datum, index) { return xScale(index) + barWidth})
+  //     .attr("yScale", function(datum, index) { return height - yScale(datum.books)})
+  //     .attr("dx", -barWidth/2)
+  //     .attr("dy", function(datum, index) { return height - yScale(datum.books) + 20 })
+  //     .attr("text-anchor", "middle")
+  //     .text(function(datum) { return yScale(datum.books);})
+  //     .attr("fill", "white");
+
+  // var drag = d3.drag().on("drag", dragHandler);
+  // bars.call(drag);
+
+  // function dragHandler() {
+  //   var coord = d3.mouse(this),
+  //       xScale = coord[0],
+  //       yScale = coord[1];
+  //
+  //   var i = Math.floor(xScale / 50);
+  //
+  //   if(i >= bars._groups[0].length || i < 0) return;
+  //   if(yScale < 0 || yScale > 200) return;
+  //
+  //   d3.select(bars._groups[0][i]).attr('yScale', yScale);
+  //   data[i].books = Math.floor(yScale);
+  //
+  //   var textNode = d3.select(text._groups[0][i]);
+  //   textNode._groups[0][0].textContent = Math.abs(yScale - 200);
+  //   textNode.attr("dy", function(datum, index) { return yScale + 20 })
+  // }
+}
+
+module.exports = generateBars;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _lodash = __webpack_require__(0);
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function generateGraph(graphId, options) {
+  var defaults = {
+    xAxisText: '',
+    yAxisText: '',
+    xKey: 'X',
+    yKey: 'Y',
+    xTicks: 8,
+    yTicks: 8,
+    xMin: 0,
+    xMax: Math.max.apply(options['data'].map(function (d) {
+      return d[options['xKey']];
+    })),
+    yMin: 0,
+    yMax: Math.max.apply(options['data'].map(function (d) {
+      return d[options['yKey']];
+    })),
+    xAxisLabelFormat: '',
+    yAxisLabelFormat: '',
+    radius: 6,
+    margin: { top: 15, right: 50, bottom: 50, left: 70 },
+    width: 570,
+    height: 340,
+    guessDist: false,
+    data: [],
+    otherData: []
+  };
+
+  options = (0, _lodash.merge)(defaults, options);
+
+  // Assign all options keys to variables of the same name in the function scope
+
+  var _Object$keys$sort$map = Object.keys(options).sort().map(function (k) {
+    return options[k];
+  }),
+      _Object$keys$sort$map2 = _slicedToArray(_Object$keys$sort$map, 19),
+      data = _Object$keys$sort$map2[0],
+      guessDist = _Object$keys$sort$map2[1],
+      height = _Object$keys$sort$map2[2],
+      margin = _Object$keys$sort$map2[3],
+      otherData = _Object$keys$sort$map2[4],
+      radius = _Object$keys$sort$map2[5],
+      width = _Object$keys$sort$map2[6],
+      xAxisLabelFormat = _Object$keys$sort$map2[7],
+      xAxisText = _Object$keys$sort$map2[8],
+      xKey = _Object$keys$sort$map2[9],
+      xMax = _Object$keys$sort$map2[10],
+      xMin = _Object$keys$sort$map2[11],
+      xTicks = _Object$keys$sort$map2[12],
+      yAxisLabelFormat = _Object$keys$sort$map2[13],
+      yAxisText = _Object$keys$sort$map2[14],
+      yKey = _Object$keys$sort$map2[15],
+      yMax = _Object$keys$sort$map2[16],
+      yMin = _Object$keys$sort$map2[17],
+      yTicks = _Object$keys$sort$map2[18];
+
+  var svg = d3.select('#' + graphId).append('svg:svg').attr('id', 'svg-' + graphId).attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).attr('offset', 100).append("g").attr("transform", "translate(37,40)");
+  // .attr('style', "-webkit-tap-highlight-color: rgba(0, 0, 0, 0);");
+
+  var xScale = d3.scaleLinear().domain(d3.extent(data, function (d) {
+    return d[xKey];
+  })).range([0, width]);
+
+  var yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
+
+  // Init grids, axes, and other paths
+  drawGrid();
+  drawAxes();
+  drawOtherPaths();
+
+  function drawAxes() {
+    svg.append("g").attr('class', 'axisX').attr("transform", "translate(0," + height + ")").call(d3.axisBottom(xScale).tickFormat(d3.format(xAxisLabelFormat)).ticks(xTicks));
+
+    svg.append("text").attr("transform", "translate(" + (width - margin.right) + " ," + (height + margin.top + 10) + ")").style("font-size", "12px").text(xAxisText);
+
+    svg.append("g").call(d3.axisLeft(yScale).tickFormat(d3.format(yAxisLabelFormat)).ticks(yTicks));
+
+    svg.append("text").attr('x', -30).attr("y", -30).attr("dy", "1em").style("font-size", "12px").text(yAxisText);
+  }
+
+  function make_x_gridlines() {
+    return d3.axisBottom(xScale).ticks(xTicks);
+  }
+
+  function make_y_gridlines() {
+    return d3.axisLeft(yScale).ticks(yTicks);
+  }
+
+  function drawGrid() {
+    svg.append("g").attr("class", "grid").attr("transform", "translate(0," + height + ")").call(make_x_gridlines().tickSize(-height).tickFormat(""));
+
+    svg.append("g").attr("class", "grid").call(make_y_gridlines().tickSize(-width).tickFormat(""));
+  }
+
+  // If there is other data don't include init header, otherwise include it
+  var initText = otherData.length === 0 ? 'Draw your Line!' : '';
+
+  svg.append('text').attr('id', 'drawYourLine').attr("transform", "translate(" + (width / 2 + 2) + " ," + (height / 2 - 2) + ")").style('text-anchor', 'middle').style("font-size", "26px").text(initText);
+
+  var guessData;
+  if (guessDist) {
+    guessData = [];
+
+    for (var i = data[0][xKey]; i <= data[data.length - 1][xKey]; i++) {
+      var _guessData$push;
+
+      guessData.push((_guessData$push = {}, _defineProperty(_guessData$push, xKey, i), _defineProperty(_guessData$push, yKey, yMin), _defineProperty(_guessData$push, 'defined', false), _guessData$push));
+    }
+  } else {
+    guessData = data.map(function (d) {
+      var _ref;
+
+      return _ref = {}, _defineProperty(_ref, xKey, d[xKey]), _defineProperty(_ref, yKey, d[yKey]), _defineProperty(_ref, 'defined', false), _ref;
+    });
+  }
+
+  var guessXDist = (guessData[1][xKey] - guessData[0][xKey]) / 2;
+
+  var body = d3.select('#svg-' + graphId);
+  var drag = d3.drag().on("drag", dragHandler);
+  body.call(drag);
+
+  // Init with otherDrawn set to false, set to true when other data lines are drawn
+  var otherDrawn = false;
+
+  var minXDefined, maxXDefined;
+
+  function dragHandler() {
+    var coord = d3.mouse(this),
+
+    // Note adjustments nec due to transform translate(37, 40)
+    xVal = clamp(xMin, xMax, xScale.invert(coord[0] - 37)),
+        yVal = clamp(yMin, yMax, yScale.invert(coord[1] - 40));
+
+    svg.select('.hoverText').remove();
+    svg.select("#drawYourLine").remove();
+    guessData.forEach(function (d) {
+      if (Math.abs(d[xKey] - xVal) < guessXDist) {
+        d[yKey] = yVal;
+        d.defined = true;
+        // Don't define up to first defined point
+        // } else if(d[xKey] < xVal && !.defined){
+        //   d[yKey] = yVal;
+        //   d.defined = true;
+        minXDefined = !minXDefined || minXDefined > xVal ? xVal : minXDefined;
+        maxXDefined = !maxXDefined || maxXDefined < xVal ? xVal : maxXDefined;
+      } else if (minXDefined && maxXDefined && !d.defined && minXDefined < d[xKey] && maxXDefined > d[xKey]) {
+        d[yKey] = yVal;
+        d.defined = true;
+      }
+    });
+
+    var defined = guessData.filter(function (d) {
+      return d.defined;
+    }),
+        incomplete = selectIncomplete(defined),
+        beforeAnswer = document.getElementById('beforeGuess-' + graphId);
+
+    if (complete(defined) && defined.length === guessData.length) {
+      beforeAnswer.classList.remove('beforeGuessComplete-' + graphId);
+      beforeAnswer.classList.add('afterGuessComplete-' + graphId);
+
+      beforeAnswer.addEventListener('click', drawAnswerPath);
+    } else {
+      beforeAnswer.removeEventListener('click', drawAnswerPath);
+    }
+
+    drawCircles('guessCirclesG', defined, '#FF4136');
+    drawPath(defined);
+    drawIncompleteRange(incomplete);
+  }
+
+  function handleMouseOver(d, i) {
+    var id = "t" + Math.round(d[xKey]) + "-" + Math.round(d[yKey] * 100) + "-" + i,
+        datum = d[yKey];
+
+    if (yAxisLabelFormat.match(/%/)) {
+      datum = (datum * 100).toFixed(1) + '%';
+    } else {
+      datum = datum.toFixed(1);
+    }
+
+    d3.select(this).attr('fill', '#ffc700').attr('r', radius + 1);
+
+    svg.append("text").attr('id', id).attr('class', 'hoverText').attr('x', function () {
+      return width / 2 - 18;
+    }).attr('y', function () {
+      return -14;
+    }).text(function () {
+      return [d[xKey] + ': ' + datum];
+    });
+  }
+
+  function lastValueText(name, d, color) {
+    // if(!datum) {
+    //   return;
+    // }
+    var datum;
+    if (yAxisLabelFormat.match(/%/)) {
+      datum = (d[yKey] * 100).toFixed(1) + '%';
+    } else {
+      datum = d[yKey].toFixed(1);
+    }
+
+    d3.select('#lastValue-' + name).remove();
+
+    svg.append("text").attr('id', 'lastValue-' + name).attr('class', 'lastValueText').attr('x', width + 10).attr('y', yScale(d[yKey]) + 5).attr('fill', color).text(function () {
+      return datum;
+    });
+  }
+
+  function handleMouseOut(color) {
+    return function (d, i) {
+      var id = "t" + Math.round(d[xKey]) + "-" + Math.round(d[yKey] * 100) + "-" + i;
+
+      d3.select(this).attr('fill', color).attr('r', radius);
+
+      d3.select("#" + id).remove();
+    };
+  }
+
+  function complete(data) {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var d = _step.value;
+
+        if (d['defined'] === undefined) {
+          return false;
+        }
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  // Three lines for three paths
+  var answerLine = d3.line().x(function (d) {
+    return xScale(d[xKey]);
+  }).y(function (d) {
+    return yScale(d[yKey]);
+  });
+
+  var guessLine = d3.line().x(function (d) {
+    return xScale(d[xKey]);
+  }).y(function (d) {
+    return yScale(d[yKey]);
+  });
+
+  var incompleteRangeLine1 = d3.line().x(function (d) {
+    return xScale(d[xKey]);
+  }).y(function (d) {
+    return yScale(d[yKey]);
+  });
+
+  var incompleteRangeLine2 = d3.line().x(function (d) {
+    return xScale(d[xKey]);
+  }).y(function (d) {
+    return yScale(d[yKey]);
+  });
+
+  // Array of incompleteRangeLines for use in highlighting both incomplete range
+  var incompleteRangeLines = [incompleteRangeLine1, incompleteRangeLine2];
+
+  // Select points for incomplete data range
+  function selectIncomplete(defined) {
+    if (guessData.length === defined.length) {
+      return [];
+    } else {
+      var incompleteRect = [];
+      if (defined[0][xKey] !== guessData[0][xKey]) {
+        var _ref2, _ref3, _ref4, _ref5;
+
+        incompleteRect.push([(_ref2 = {}, _defineProperty(_ref2, xKey, guessData[0][xKey]), _defineProperty(_ref2, yKey, yMin), _defineProperty(_ref2, 'defined', true), _ref2), (_ref3 = {}, _defineProperty(_ref3, xKey, guessData[0][xKey]), _defineProperty(_ref3, yKey, yMax), _defineProperty(_ref3, 'defined', true), _ref3), (_ref4 = {}, _defineProperty(_ref4, xKey, defined[0][xKey]), _defineProperty(_ref4, yKey, yMax), _defineProperty(_ref4, 'defined', true), _ref4), (_ref5 = {}, _defineProperty(_ref5, xKey, defined[0][xKey]), _defineProperty(_ref5, yKey, yMin), _defineProperty(_ref5, 'defined', true), _ref5)]);
+      } else {
+        incompleteRect.push([]);
+      }
+
+      var rightIncompleteX = defined[defined.length - 1][xKey];
+      if (rightIncompleteX !== guessData[guessData.length - 1][xKey]) {
+        var _ref6, _ref7, _ref8, _ref9;
+
+        incompleteRect.push([(_ref6 = {}, _defineProperty(_ref6, xKey, rightIncompleteX), _defineProperty(_ref6, yKey, yMin), _defineProperty(_ref6, 'defined', true), _ref6), (_ref7 = {}, _defineProperty(_ref7, xKey, rightIncompleteX), _defineProperty(_ref7, yKey, yMax), _defineProperty(_ref7, 'defined', true), _ref7), (_ref8 = {}, _defineProperty(_ref8, xKey, xMax), _defineProperty(_ref8, yKey, yMax), _defineProperty(_ref8, 'defined', true), _ref8), (_ref9 = {}, _defineProperty(_ref9, xKey, xMax), _defineProperty(_ref9, yKey, yMin), _defineProperty(_ref9, 'defined', true), _ref9)]);
+      } else {
+        incompleteRect.push([]);
+      }
+
+      return incompleteRect;
+    }
+  }
+
+  var path = svg.append('path');
+
+  function drawCircles(id, data, color) {
+    svg.select('#' + id).remove();
+
+    var originalRadius = id === 'answerCirclesG' ? 0 : radius;
+
+    svg.append('g').attr('id', id).selectAll('circle').data(data).enter().append('circle').attr('r', originalRadius).attr('cx', function (d) {
+      return xScale(d[xKey]);
+    }).attr('cy', function (d) {
+      return yScale(d[yKey]);
+    }).attr('fill', color).attr('class', 'guessCircles').on("mouseover", handleMouseOver).on("mouseout", handleMouseOut(color)).transition().duration(3000).attr('r', radius);
+  }
+
+  function drawPath(defined) {
+    path.attr('d', guessLine.defined(function (d) {
+      return d.defined;
+    })(defined)).attr('class', 'guessLine');
+    lastValueText('guess', defined[defined.length - 1], '#FF4136');
+  }
+
+  function drawOtherPaths() {
+    for (var i = 0; i < otherData.length; i++) {
+      var otherDatum = otherData[i],
+          otherLine = d3.line().x(function (d) {
+        return xScale(d[xKey]);
+      }).y(function (d) {
+        return yScale(d[yKey]);
+      });
+
+      drawOtherPath(otherDatum, otherLine, '#05E177', 'otherPath-' + i);
+      var otherPath = svg.append('path');
+
+      otherPath.data([otherDatum]).attr('d', otherLine).attr('class', 'otherLine1');
+
+      lastValueText('otherPath-i', otherDatum[otherDatum.length - 1], '#05E177');
+    }
+  }
+
+  // Draw incompleteRangeLines
+  var incompleteRange1 = svg.append('path'),
+      incompleteRange2 = svg.append('path'),
+      incompleteRanges = [incompleteRange1, incompleteRange2];
+
+  function drawIncompleteRange(incomplete) {
+    if (incomplete.length === 0) {
+      d3.select('.incompleteRange' + graphId).remove();
+    }
+
+    for (var _i = 0; _i < incomplete.length; _i++) {
+      var line = incompleteRangeLines[_i],
+          incompleteRangeSide = incomplete[_i];
+      incompleteRanges[_i].attr('d', line.defined(function (d) {
+        return d.defined;
+      })(incompleteRangeSide)).attr('class', 'incompleteRange' + graphId);
+    }
+  }
+
+  // declareAnswerPath
+  function drawOtherPath(data, line, color, name) {
+    var path = svg.append('path').data([data]).attr('class', 'answerLine').attr('stroke-width', 2).attr('d', line);
+
+    var length = path.node().getTotalLength();
+
+    path.attr("stroke-dasharray", length + " " + length).attr("stroke-dashoffset", length).transition().duration(2000).attr("stroke-dashoffset", 0);
+
+    drawCircles(name + 'CirclesG', data, color);
+  }
+
+  function drawAnswerPath() {
+    var answerText = document.getElementById('answerText-' + graphId),
+        beforeGuess = document.getElementById('beforeGuess-' + graphId);
+
+    drawOtherPath(data, answerLine, 'steelblue', 'answer');
+    window.setTimeout(function () {
+      return lastValueText('answer', data[data.length - 1], '#4682b4');
+    }, 2000);
+    answerText.classList.remove('hidden');
+    beforeGuess.classList.remove('afterGuessComplete-' + graphId);
+    beforeGuess.classList.add('beforeGuessComplete-' + graphId);
+    drag = d3.drag().on("drag", null);
+    body.call(drag);
+  }
+
+  function clamp(a, b, c) {
+    return Math.max(a, Math.min(b, c));
+  }
+}
+
+module.exports = generateGraph;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*
+  widgetLocationId
+
+  may make format more customizable
+*/
+
+function generateNumGuessWidget(widgetLocationId, numFormat) {
+  var fBT = document.getElementById(widgetLocationId),
+      num = document.createElement('div'),
+      numBox = document.createElement('div');
+
+  numBox.classList.add('numBox');
+
+  num.setAttribute('id', 'numBox-num-' + widgetLocationId);
+  num.classList.add('numBox-num');
+  num.textContent = "?";
+
+  var controls = document.createElement('div');
+  controls.classList.add('controls');
+
+  var plus = document.createElement('div'),
+      minus = document.createElement('div');
+
+  var incrementInterval, decrementInterval;
+
+  plus.addEventListener("click", increment);
+  plus.addEventListener("mousedown", incrementHandler);
+
+  plus.addEventListener("mouseup", function (e) {
+    e.preventDefault();
+    window.clearTimeout(incrementInterval);
+  });
+
+  minus.addEventListener("click", decrement);
+  minus.addEventListener("mousedown", decrementHandler);
+
+  minus.addEventListener("mouseup", function (e) {
+    e.preventDefault();
+    window.clearTimeout(decrementInterval);
+  });
+
+  var guess = 0;
+
+  function incrementHandler(e) {
+    e.preventDefault();
+    incrementInterval = setInterval(increment, 150);
+  }
+
+  function decrementHandler(e) {
+    e.preventDefault();
+    decrementInterval = setInterval(decrement, 150);
+  }
+
+  function increment() {
+    var num = document.getElementById('numBox-num-' + widgetLocationId),
+        beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
+
+    if (guess < 100) {
+      if (guess === 0) {
+        beforeGuess.classList.remove('beforeGuessComplete-' + widgetLocationId);
+        beforeGuess.classList.add('afterGuessComplete-' + widgetLocationId);
+      }
+      guess++;
+      num.textContent = '' + guess + numFormat;
+    }
+  }
+
+  function decrement() {
+    var num = document.getElementById('numBox-num-' + widgetLocationId),
+        beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
+
+    if (guess > 0) {
+      if (guess === 0) {
+        beforeGuess.classList.remove('beforeGuessComplete-' + widgetLocationId);
+        beforeGuess.classList.add('afterGuessComplete-' + widgetLocationId);
+      }
+      guess--;
+      num.textContent = '' + guess + numFormat;
+    }
+  }
+
+  plus.classList.add('numBox-change');
+  plus.classList.add('plus');
+  minus.classList.add('numBox-change');
+  minus.classList.add('minus');
+  plus.textContent = '+';
+  minus.textContent = '-';
+
+  controls.appendChild(plus);
+  controls.appendChild(minus);
+
+  numBox.appendChild(num);
+  numBox.appendChild(controls);
+  fBT.appendChild(numBox);
+
+  // Handle answer
+  var beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
+  beforeGuess.addEventListener('click', handleAnswer);
+
+  function handleAnswer() {
+    var answer = document.getElementById('answerText-' + widgetLocationId),
+        beforeGuess = document.getElementById('beforeGuess-' + widgetLocationId);
+
+    beforeGuess.classList.remove('afterGuessComplete-' + widgetLocationId);
+    beforeGuess.classList.add('beforeGuessComplete-' + widgetLocationId);
+
+    plus.removeEventListener('click', increment);
+    plus.removeEventListener('mousedown', increment);
+    minus.removeEventListener('click', decrement);
+    minus.removeEventListener('mousedown', decrement);
+
+    answer.classList.remove('hidden');
+  }
+}
+
+module.exports = generateNumGuessWidget;
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -17780,6 +17951,59 @@ module.exports = function(module) {
 	return module;
 };
 
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var generateGraph = __webpack_require__(2);
+var generateNumGuessWidget = __webpack_require__(3);
+var generateBars = __webpack_require__(1);
+
+document.addEventListener('DOMContentLoaded', function () {
+  var incarcerationOverTime = [{ year: 1925, population: 91.669 }, { year: 1930, population: 129.453 }, { year: 1935, population: 144.180 }, { year: 1940, population: 173.706 }, { year: 1945, population: 133.649 }, { year: 1950, population: 166.123 }, { year: 1955, population: 185.780 }, { year: 1960, population: 212.953 }, { year: 1965, population: 210.895 }, { year: 1970, population: 196.429 }, { year: 1975, population: 240.593 }, { year: 1980, population: 329.821 }, { year: 1985, population: 502.507 }, { year: 1990, population: 771.243 }, { year: 1995, population: 1125.874 }, { year: 2000, population: 1381.892 }, { year: 2005, population: 1462.866 }, { year: 2010, population: 1552.669 }, { year: 2015, population: 1476.847 }];
+
+  var incarcerationOverTimeOptions = {
+    xAxisText: 'Year',
+    yAxisText: 'Population in Thousands',
+    yMin: 0,
+    yMax: 1500,
+    xKey: 'year',
+    yKey: 'population',
+    xMin: 1925,
+    xMax: 2015,
+    xAxisLabelFormat: 'd',
+    yAxisLabelFormat: '',
+    xTicks: 10,
+    yTicks: 5,
+    width: 600,
+    data: incarcerationOverTime
+  };
+
+  generateGraph('incarcerationOverTime', incarcerationOverTimeOptions);
+
+  var internationalIncarceration = [{ country: "United States", rate: 670 }, { country: "Russia", rate: 439 }, { country: "Canada", rate: 114 }, { country: "Germany", rate: 76 }];
+
+  var internationalIncarcerationOptions = {
+    xAxisText: 'Country',
+    yAxisText: 'Rates of Incarceration per 100,000',
+    yMin: 0,
+    yMax: 1000,
+    xKey: 'country',
+    yKey: 'rate',
+    xAxisLabelFormat: '',
+    yAxisLabelFormat: '',
+    xTicks: 10,
+    yTicks: 5,
+    width: 400,
+    height: 400,
+    data: internationalIncarceration
+  };
+  generateBars('internationalIncarceration', internationalIncarcerationOptions);
+});
 
 /***/ })
 /******/ ]);

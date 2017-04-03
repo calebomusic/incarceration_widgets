@@ -191,3 +191,9 @@ svg {
 .numBox-change:hover {
 
 }
+
+.answerBars {
+  fill: red;
+  fill-opacity: 0.75;
+  background-color: red;
+}

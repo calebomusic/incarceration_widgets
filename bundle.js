@@ -17279,7 +17279,7 @@ function generateBars(graphId, options) {
   //     .attr("dy", "0.71em")
   //     .attr("text-anchor", "end")
   //     .text("Frequency");
-
+  drawGrid();
   drawAxes(guess);
   var guessBars = drawBars(guess, guessData),
       text = addLabels(guess, guessData, true),
@@ -17311,31 +17311,33 @@ function generateBars(graphId, options) {
 
     return g.selectAll('.' + className).data(data).enter().append("rect").attr("class", className).attr("x", function (d) {
       return xScale(d[xKey]);
-    }).attr("width", xScale.bandwidth()).attr("y", function (d) {
+    }).attr("width", '0px').attr("y", function (d) {
       return yScale(d[yKey]);
     }).attr("height", function (d) {
       return height - yScale(d[yKey]);
-    }).attr("fill", "#2d578b");
+    }).attr("fill", "#2d578b").transition().duration(2000).attr("width", xScale.bandwidth());
   }
 
   // Useful for answer, not so useful for guess.
   function addLabels(g, data, init) {
+    var className = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'label';
+
     var label = init ? '?' : function (d) {
       return d[yKey];
     };
 
-    return g.selectAll(".label").data(data).enter().append("text").attr("class", "label").attr("x", function (d) {
+    return g.selectAll("." + className).data(data).enter().append("text").attr("class", className).attr("x", function (d) {
       return xScale(d[xKey]) + xScale.bandwidth() / 2;
     }).attr("y", function (d) {
       return yScale(d[yKey]) + 20;
-    }).attr("text-anchor", "middle").text(label).attr("font-family", "sans-serif").attr("font-size", "20px").attr("fill", "white");
+    }).attr("text-anchor", "middle").text(label).attr("font-family", "sans-serif").attr("font-size", "20px").attr("fill", "white").style("opacity", '0').transition().duration(2500).style("opacity", "1");
   }
 
   var drag = d3.drag().on("drag", dragHandler);
   //  .on("mouseover", dragEndHandler);
 
-  guess.call(drag);
-  text.call(drag);
+  var body = d3.select('#svg-' + graphId);
+  body.call(drag);
 
   var initText = otherData.length === 0 ? 'Guess!' : '';
 
@@ -17362,10 +17364,10 @@ function generateBars(graphId, options) {
     var textNode = d3.select(text._groups[0][xVal]);
 
     if (yVal > Math.floor(yMax / 20)) {
-      textNode._groups[0][0].textContent = Math.floor(yVal);
+      textNode._groups[0][0] && (textNode._groups[0][0].textContent = Math.floor(yVal));
       textNode.attr("y", y + 20);
     } else {
-      textNode._groups[0] && (textNode._groups[0][0].textContent = '');
+      textNode._groups[0][0] && (textNode._groups[0][0].textContent = '');
     }
 
     if (complete === false) {
@@ -17411,52 +17413,12 @@ function generateBars(graphId, options) {
     beforeAnswer.addEventListener('click', drawAnswerGraph);
 
     complete = true;
-    // Add event listener to show me how i did button
   }
-
-  // function drawAnswerGraph() {
-  //   var answer = d3.select('#answer-' + graphId)
-  //     .append('svg:svg')
-  //       .attr('id', 'svg-' + graphId)
-  //       .attr('width', width + margin.left + margin.right)
-  //       .attr('height', height + margin.top + margin.bottom)
-  //       .attr('offset', 100)
-  //       .append("g")
-  //       .attr("transform",
-  //         "translate(37,40)")
-  //   drawAxes(answer, data)
-  //   drawBars(answer, data);
-  //   addLabels(answer, data);
-  //
-  //   var afterAnswer = document.getElementById('beforeGuess-' + graphId),
-  //       answerText = document.getElementById('answerText-' + graphId);
-  //
-  //   afterAnswer.classList.add('beforeGuessComplete-' + graphId);
-  //   afterAnswer.classList.remove('afterGuessComplete-' + graphId);
-  //
-  //   afterAnswer.removeEventListener('click', drawAnswerGraph);
-  //
-  //   answerText.classList.remove('hidden');
-  //
-  //   var drag = d3.drag().on('drag', null);
-  //
-  //   guessBars.call(drag);
-  //   text.call(drag);
-  // }
 
   // Draw on guess version
   function drawAnswerGraph() {
-    // var answer = d3.select('#answer-' + graphId)
-    //   .append('svg:svg')
-    //     .attr('id', 'svg-' + graphId)
-    //     .attr('width', width + margin.left + margin.right)
-    //     .attr('height', height + margin.top + margin.bottom)
-    //     .attr('offset', 100)
-    //     .append("g")
-    //     .attr("transform",
-    //       "translate(37,40)")
     drawBars(guess, data, 'answerBars');
-    addLabels(guess, data);
+    addLabels(guess, data, false, 'answerText');
 
     var afterAnswer = document.getElementById('beforeGuess-' + graphId),
         answerText = document.getElementById('answerText-' + graphId);
@@ -17470,13 +17432,27 @@ function generateBars(graphId, options) {
 
     var drag = d3.drag().on('drag', null);
 
-    guessBars.call(drag);
-    text.call(drag);
+    body.call(drag);
   }
+
+  function make_x_gridlines() {
+    return d3.axisBottom(xScale).ticks(xTicks);
+  }
+
+  function make_y_gridlines() {
+    return d3.axisLeft(yScale).ticks(yTicks);
+  }
+
+  function drawGrid() {
+    guess.append("g").attr("class", "grid").attr("transform", "translate(0," + height + ")").call(make_x_gridlines().tickSize(-height).tickFormat(""));
+
+    guess.append("g").attr("class", "grid").call(make_y_gridlines().tickSize(-width).tickFormat(""));
+  }
+
   // NOT CURRENTLY USING
   function dragEndHandler() {
     var coord = d3.mouse(this),
-        xVal = getXVal(coord[0] + 37),
+        xVal = getXVal(coord[0]),
         yVal = yScale.invert(coord[1]),
         y = coord[1];
 
@@ -17490,7 +17466,8 @@ function generateBars(graphId, options) {
         max = xScale.range()[1],
         step = Math.floor(max / data.length);
 
-    return Math.floor(coord / step);
+    // TODO: Hardcoded!
+    return Math.floor((coord - 30) / step);
   }
 
   function clamp(a, b, c) {

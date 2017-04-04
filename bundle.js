@@ -17171,11 +17171,6 @@ var _lodash = __webpack_require__(0);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-/*TODO
-  yScale axis
-  xScale axis
-  Options: alternate bars between guess + answer, diff graphs, split graph in half
-*/
 function generateBars(graphId, options) {
   var defaults = {
     xAxisText: '',
@@ -17233,12 +17228,6 @@ function generateBars(graphId, options) {
       yMin = _Object$keys$sort$map2[18],
       yTicks = _Object$keys$sort$map2[19];
 
-  // var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-  //     y = d3.scaleLinear().rangeRound([height, 0]);
-  //
-  // x.domain(data.map(function(d) { return d[xKey]; }));
-  // y.domain([0, d3.max(data, function(d) { return d[yKey]; })]);
-
   var guessData = data.map(function (d) {
     var _ref;
 
@@ -17252,33 +17241,8 @@ function generateBars(graphId, options) {
   })).range([0, width]).padding(.25),
       yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
 
-  // var svg = d3.select("#" + graphId)
-  //       .append("svg:svg")
-  //       .attr("width", width)
-  //       .attr("height", height);
-  //
-  // var g = svg.append("g")
-  //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-  //         .attr("height", height + margin.top + margin.bottom);
-
   var guess = d3.select('#' + graphId).append('svg:svg').attr('id', 'svg-' + graphId).attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).attr('offset', 100).append("g").attr("transform", "translate(37,40)");
 
-  // g.append("g")
-  //   .attr("class", "axis axis--xScale")
-  //   .attr("transform", "translate(0," + height + ")")
-  //   .call(d3.axisBottom(xScale));
-
-  // g.append("g")
-  //     .attr("class", "axis axis--yScale")
-  //     .call(d3.axisLeft(y)
-  //             .tickFormat('')
-  //             .ticks(6))
-  //   .append("text")
-  //     .attr("transform", "rotate(-90)")
-  //     .attr("yScale", 6)
-  //     .attr("dy", "0.71em")
-  //     .attr("text-anchor", "end")
-  //     .text("Frequency");
   drawGrid();
   drawAxes(guess);
   var guessBars = drawBars(guess, guessData),
@@ -17288,22 +17252,7 @@ function generateBars(graphId, options) {
   function drawAxes(g) {
     g.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(xScale));
 
-    // g.append("text")
-    //     .attr("transform",
-    //           "translate(" + (width - margin.right) + " ," +
-    //                          (height + margin.top + 10) + ")")
-    //     .style("font-size", "12px")
-    //     .text(xAxisText);
-
-
     g.append("g").call(d3.axisLeft(yScale).tickFormat(d3.format(yAxisLabelFormat)).ticks(yTicks));
-    //
-    // g.append("text")
-    //     .attr('xScale', -30)
-    //     .attr("yScale", -30)
-    //     .attr("dy", "1em")
-    //     .style("font-size", "12px")
-    //     .text(yAxisText);
   }
 
   function drawBars(g, data) {
@@ -17334,7 +17283,6 @@ function generateBars(graphId, options) {
   }
 
   var drag = d3.drag().on("drag", dragHandler);
-  //  .on("mouseover", dragEndHandler);
 
   var body = d3.select('#svg-' + graphId);
   body.call(drag);
@@ -17354,10 +17302,6 @@ function generateBars(graphId, options) {
     if (yVal <= 0 || yVal >= yMax) {
       return;
     }
-    // var i = Math.floor(x / 50);
-
-    // if(i >= guessBars._groups[0].length || i < 0) return;
-    // if(y < 0 || y > 200) return;
 
     d3.select(guessBars._groups[0][xVal]).attr('y', y).attr("height", height - y);
 
@@ -17415,7 +17359,6 @@ function generateBars(graphId, options) {
     complete = true;
   }
 
-  // Draw on guess version
   function drawAnswerGraph() {
     drawBars(guess, data, 'answerBars');
     addLabels(guess, data, false, 'answerText');
@@ -17447,18 +17390,6 @@ function generateBars(graphId, options) {
     guess.append("g").attr("class", "grid").attr("transform", "translate(0," + height + ")").call(make_x_gridlines().tickSize(-height).tickFormat(""));
 
     guess.append("g").attr("class", "grid").call(make_y_gridlines().tickSize(-width).tickFormat(""));
-  }
-
-  // NOT CURRENTLY USING
-  function dragEndHandler() {
-    var coord = d3.mouse(this),
-        xVal = getXVal(coord[0]),
-        yVal = yScale.invert(coord[1]),
-        y = coord[1];
-
-    var textNode = d3.select(text._groups[0][xVal]);
-    textNode._groups[0][0].textContent = Math.floor(yVal);
-    textNode.attr("y", y + 20);
   }
 
   function getXVal(coord) {

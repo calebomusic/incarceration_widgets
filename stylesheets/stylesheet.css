@@ -192,8 +192,12 @@ svg {
 
 }
 
-.answerBars {
+[class^=answerBars] {
   fill: red;
   fill-opacity: 0.75;
   background-color: red;
+}
+
+[class^=opaqueBars] {
+  fill-opacity: 0.50;
 }

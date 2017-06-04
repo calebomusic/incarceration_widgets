@@ -1,6 +1,12 @@
+/* Red: #FF0B3A
+   Darker: #5F0415
+   Pinkish: #FB7CCA
+   Blue: #6EC6F9 */
+
 body {
   font-family: 'Domine', serif;
   user-select: none;
+  background-color: #F6F6F4;
 }
 
 a {
@@ -14,7 +20,7 @@ a {
 }
 
 [class^=incompleteRange] {
-  fill: rgb(255, 199, 0);
+  fill: #111111;
   opacity: 0;
   -webkit-animation: incompleteRangeAni 1.5s 0s infinite;
   -moz-animation: incompleteRangeAni 1.5s 0s infinite;
@@ -77,18 +83,21 @@ a {
 }
 
 .guessLine {
-  stroke: #FF4136;
+  /*stroke: #FF4136;*/
+  stroke: #FB7CCA;
   stroke-width: 2px;
   fill: none;
 }
 
 .answerLine {
-  stroke: steelblue;
+  /*stroke: steelblue;*/
+  stroke: #6EC6F9;
   fill: none;
 }
 
 .otherLine1 {
-  stroke: #05E177;
+  stroke: #5F0415;
+  /*stroke: #6EC6F9;*/
   stroke-width: 2px;
   fill: none;
 }
@@ -200,4 +209,12 @@ svg {
 
 [class^=opaqueBars] {
   fill-opacity: 0.50;
+}
+
+[id^=guessC] {
+  fill: #FF0B3A;
+}
+
+[id^=answerC] {
+  fill: #6EC6F9;
 }

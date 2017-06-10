@@ -17453,6 +17453,7 @@ function generateGraph(graphId, options) {
 
   var answerColor = "#6EC6F9",
       guessColor = "#FB7CCA",
+      mouseoverColor = "#FB7CCA",
       otherColor = "#5F0415";
 
   options = (0, _lodash.merge)(defaults, options);
@@ -17610,7 +17611,7 @@ function generateGraph(graphId, options) {
       datum = datum.toFixed(1);
     }
 
-    d3.select(this).attr('fill', '#ffc700').attr('r', radius + 1);
+    d3.select(this).attr('fill', mouseoverColor).attr('r', radius + 1);
 
     svg.append("text").attr('id', id).attr('class', 'hoverText').attr('x', function () {
       return width / 2 - 18;
